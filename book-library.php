@@ -137,3 +137,20 @@ function bl_fill_book_columns($column, $post_id) {
     }
 }
 add_action('manage_book_posts_custom_column', 'bl_fill_book_columns', 10, 2);
+
+
+function bl_append_book_meta_to_content($content) {
+    if (is_singular('book') && in_the_loop() && is_main_query()) {
+        $author = get_post_meta(get_the_ID(), '_bl_author_name', true);
+        $year = get_post_meta(get_the_ID(), '_bl_published_year', true);
+
+        $meta = '<div class="book-meta" style="margin-top:20px; padding:10px; border-top:1px solid #ccc;">';
+        $meta .= '<p><strong>Author:</strong> ' . esc_html($author) . '</p>';
+        $meta .= '<p><strong>Published Year:</strong> ' . esc_html($year) . '</p>';
+        $meta .= '</div>';
+
+        return $content . $meta;
+    }
+    return $content;
+}
+add_filter('the_content', 'bl_append_book_meta_to_content');
